@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import UserRouts from "./Routs/UserRouts.js";
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,10 @@ mongoose
   .catch(() => {
     console.log(`some error `);
   });
+
+app.use(express.json());
+
+app.use("/user", UserRouts);
 
 app.listen(port, () => {
   console.log("port s running");

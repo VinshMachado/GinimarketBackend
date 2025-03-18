@@ -6,7 +6,6 @@ const StockSchma = new mongoose.Schema({
   ShareValue: Number,
   OSshares: Number,
   EqupiedShares: Number,
-  Profit: Number,
 });
 
 const Stock = mongoose.model("Stocks", StockSchma);
