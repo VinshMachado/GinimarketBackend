@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import UserRouts from "./Routs/UserRouts.js";
 import StockRout from "./Routs/StockRouts.js";
 import cors from "cors";
+import stockthing from "./Controler/StockControls.js";
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,8 @@ app.use(express.json());
 
 app.use("/user", UserRouts);
 app.use("/stock", StockRout);
+
+stockthing.changeStockPrices();
 
 app.listen(port, () => {
   console.log("port s running at", port);

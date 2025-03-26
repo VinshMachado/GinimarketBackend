@@ -7,5 +7,6 @@ const StockRout = express.Router();
 
 StockRout.post("/add", middleWare.middleWare, Stockcontrols.Addstock);
 StockRout.get("/getstocks", Stockcontrols.getStocks);
+StockRout.post("/one", Stockcontrols.getonestock);
 
 export default StockRout;
