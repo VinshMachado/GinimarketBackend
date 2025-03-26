@@ -5,6 +5,6 @@ let UserRouts = express.Router();
 
 UserRouts.post("/signin", LoginControls.SigninUser);
 
-UserRouts.get("/login", LoginControls.LoginUser);
+UserRouts.post("/login", LoginControls.LoginUser);
 
 export default UserRouts;

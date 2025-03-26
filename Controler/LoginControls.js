@@ -1,3 +1,4 @@
+"use client";
 import { response } from "express";
 import express from "express";
 import userSchma from "../Schma/UserSchma.js";
@@ -6,13 +7,15 @@ import jwt from "jsonwebtoken";
 
 let SigninUser = async (req, res) => {
   if (!req.body) res.status(400).json({ error: "somthing went wrong" });
-  let { name, password } = req.body;
+  let { username, password } = req.body;
 
   let hashedpass = await bcrypt.hash(password, 10);
+  let a = userSchma.findOne({ name: username });
+  console.log(a);
 
   let newUser = new userSchma({
-    Name: name,
-    Balance: 500000,
+    Name: username,
+    Balance: 50000,
     Password: hashedpass,
     PL: 0,
     ShareHoldings: [],
@@ -26,34 +29,39 @@ let SigninUser = async (req, res) => {
 //login ka control//
 
 let LoginUser = async (req, res) => {
-  if (!req.body) res.status(400).json({ error: "somthing went wrong" });
+  console.log("ran");
+  if (!req.body) return res.status(400).json({ error: "somthing went wrong" });
 
   let { username, password } = req.body;
-  let user = await userSchma.findOne({ name: username });
+  console.log(req.body);
+  let user = await userSchma.findOne({ Name: username });
+
+  if (!user) return res.status(401);
+
   let passVal = await bcrypt.compare(password, user.Password);
-  console.log(passVal);
+  if (passVal == true) {
+    let token = jwt.sign(
+      { userId: user._id, name: user.Name },
+      process.env.JWTKEY,
+      { expiresIn: "90d" }
+    );
 
-  let token = jwt.sign(
-    { userId: user._id, name: user.Name },
-    process.env.JWTKEY,
-    { expiresIn: "1d" }
-  );
-  console.log(token);
-
-  console.log(user);
-  res.status(200).json({ msg: "working fine" });
+    res.status(200).json({ msg: "Login successful", token });
+  } else {
+    res.status(401).json({ msg: "password dosnt match" });
+  }
 };
 
 let middleWare = (req, res, next) => {
   let token = req.header("Authorization")?.split(" ")[1];
 
-  if (!token) res.status(401);
+  if (!token) return res.status(401);
 
   try {
     req.user = jwt.verify(token, process.env.JWTKEY);
     next();
   } catch {
-    res.status(401);
+    return res.status(401);
   }
 };
 

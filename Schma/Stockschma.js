@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-const StockSchma = new mongoose.Schema({
+const Stock = new mongoose.Schema({
   StockName: String,
   CompanyValue: Number,
   ShareValue: Number,
   OSshares: Number,
   EqupiedShares: Number,
+  ImageUrl: String,
+  Desc: String,
 });
 
-const Stock = mongoose.model("Stocks", StockSchma);
+const StockSchma = mongoose.model("Stocks", Stock);
 
-export default { Stock };
+export default StockSchma;
