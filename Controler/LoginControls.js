@@ -65,4 +65,5 @@ let middleWare = (req, res, next) => {
   }
 };
 
+
 export default { LoginUser, SigninUser, middleWare };
