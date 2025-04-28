@@ -5,15 +5,14 @@ import UserRouts from "./Routs/UserRouts.js";
 import StockRout from "./Routs/StockRouts.js";
 import cors from "cors";
 import stockthing from "./Controler/StockControls.js";
+import { Server } from "socket.io";
 
 dotenv.config();
 const app = express();
 const port = process.env.port;
 const databaseurl = process.env.db_link;
+console.log(databaseurl);
 
-app.get("/", (req, res) => {
-  res.send("hello");
-});
 app.use(cors());
 
 // connection//

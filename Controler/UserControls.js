@@ -13,18 +13,26 @@ let userdata = async (req, res) => {
 };
 
 let buystock = async (req, res) => {
-  let { name, qty } = req.body;
+  const { name, qty } = req.body;
+  console.log("a");
 
-  let stock = await StockSchma.findOne({ StockName: name });
+  const userInv = await userSchma.findById(req.user.userId);
+  if (!userInv) return res.status(404).json({ msg: "User not found" });
 
-  await userSchma.updateOne(
-    { Name: req.user.name },
-    {
-      $push: { ShareHoldings: { stockName: name, stockQuantity: qty } },
-      $inc: { Balance: -(stock.ShareValue * qty) },
-    }
-  );
+  const holding = userInv.ShareHoldings.find((h) => h.stockName === name);
 
+  if (holding) {
+    // 3a) if it exists, bump the qty
+    holding.stockQuantity += qty;
+  } else {
+    // 3b) otherwise add a new entry
+    userInv.ShareHoldings.push({ stockName: name, stockQuantity: qty });
+  }
+
+  // 4) persist user changes
+  await userInv.save();
+
+  // 5) update the master Stock model
   await StockSchma.updateOne(
     { StockName: name },
     {
@@ -32,15 +40,14 @@ let buystock = async (req, res) => {
         OSshares: -qty,
         EqupiedShares: qty,
       },
+      // multiply current share value by (1 + 0.01*qty)
       $mul: {
-        ShareValue: 1.01, // Multiply price by 1.01 → (price + 1%)
+        ShareValue: 1 + 0.01 * qty,
       },
     }
   );
+  const freshUser = await userSchma.findById(req.user._id);
 
-  let data = await userSchma.findOne({ _id: req.user.userId });
-
-  res.status(200).json({ msg: "success", data: { data } });
+  res.status(200).json({ msg: "success", data: freshUser });
 };
-
 export default { userdata, buystock };
