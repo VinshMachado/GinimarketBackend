@@ -46,8 +46,11 @@ let LoginUser = async (req, res) => {
       { expiresIn: "90d" }
     );
 
+    console.log("success");
+
     res.status(200).json({ msg: "Login successful", token });
   } else {
+    console.log("not success");
     res.status(401).json({ msg: "password dosnt match" });
   }
 };
