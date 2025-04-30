@@ -9,6 +9,8 @@ let model = new mongoose.Schema({
     {
       stockName: String,
       stockQuantity: Number,
+      stockId: String,
+      stockImg: String,
     },
   ],
 });

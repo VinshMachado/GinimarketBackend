@@ -28,7 +28,7 @@ app.use(express.json());
 app.use("/user", UserRouts);
 app.use("/stock", StockRout);
 
-stockthing.changeStockPrices();
+// stockthing.changeStockPrices();
 
 app.listen(port, () => {
   console.log("port s running at", port);

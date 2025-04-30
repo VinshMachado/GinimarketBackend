@@ -8,12 +8,13 @@ let userdata = async (req, res) => {
 
   let data = await userSchma.findOne({ _id: req.user.userId });
   console.log(data);
-  res.status(200).send(data);
+  res.status(200).json(data);
   console.log("run");
 };
 
 let buystock = async (req, res) => {
-  const { name, qty } = req.body;
+  const { name, qty, stockId, stockImg } = req.body;
+
   console.log("a");
 
   const userInv = await userSchma.findById(req.user.userId);
@@ -26,7 +27,12 @@ let buystock = async (req, res) => {
     holding.stockQuantity += qty;
   } else {
     // 3b) otherwise add a new entry
-    userInv.ShareHoldings.push({ stockName: name, stockQuantity: qty });
+    userInv.ShareHoldings.push({
+      stockName: name,
+      stockQuantity: qty,
+      stockId: stockId,
+      stockImg: stockImg,
+    });
   }
   let stockdata = await StockSchma.findOne({ StockName: name });
   console.log(stockdata.ShareValue);
@@ -50,6 +56,7 @@ let buystock = async (req, res) => {
 
   res.status(200).json({ msg: "success", data: freshUser });
   await userInv.save();
+  console.log("completed");
 };
 
 let sellstock = async (req, res) => {
