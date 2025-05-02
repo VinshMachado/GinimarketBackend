@@ -59,7 +59,7 @@ let middleWare = (req, res, next) => {
   let token = req.header("Authorization")?.split(" ")[1];
 
   if (!token) return res.status(401);
-  console.log(process.env.JWTKEY);
+  
   try {
     req.user = jwt.verify(token, process.env.JWTKEY);
     console.log(req.user);
