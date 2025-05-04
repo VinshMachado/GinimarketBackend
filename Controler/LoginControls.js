@@ -29,7 +29,6 @@ let SigninUser = async (req, res) => {
 //login ka control//
 
 let LoginUser = async (req, res) => {
-  console.log("ran");
   if (!req.body) return res.status(400).json({ error: "somthing went wrong" });
 
   let { username, password } = req.body;
@@ -59,10 +58,10 @@ let middleWare = (req, res, next) => {
   let token = req.header("Authorization")?.split(" ")[1];
 
   if (!token) return res.status(401);
-  
+
   try {
     req.user = jwt.verify(token, process.env.JWTKEY);
-    console.log(req.user);
+
     next();
   } catch {
     return res.status(401);

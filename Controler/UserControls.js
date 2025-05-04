@@ -4,12 +4,9 @@ import express from "express";
 import StockSchma from "../Schma/Stockschma.js";
 
 let userdata = async (req, res) => {
-  console.log(req.user.userId);
-
   let data = await userSchma.findOne({ _id: req.user.userId });
-  console.log(data);
+
   res.status(200).json(data);
-  console.log("run");
 };
 
 let buystock = async (req, res) => {

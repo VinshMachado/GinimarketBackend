@@ -5,12 +5,12 @@ import UserRouts from "./Routs/UserRouts.js";
 import StockRout from "./Routs/StockRouts.js";
 import cors from "cors";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import Socketsetup from "./Controler/socket.js";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.port || 4000; // Fallback port
+const port = process.env.port || 4000;
 const databaseurl = process.env.db_link;
 
 console.log(databaseurl);
@@ -29,20 +29,12 @@ mongoose
   .then(() => console.log(`connected to db`))
   .catch(() => console.log(`some error`));
 
-// ✅ Wrap express in HTTP server
+// HTTP server
 const httpServer = createServer(app);
 
-// ✅ Socket.IO setup on same server
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*", // Allow all origins — adjust for production
-    methods: ["GET", "POST"],
-  },
-});
+// Socket.IO setup
 
-io.on("connection", (socket) => {
-  console.log("Socket connected:", socket.id);
-});
+Socketsetup(httpServer);
 
 // ✅ Start the combined server
 httpServer.listen(port, () => {
