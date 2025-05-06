@@ -34,6 +34,8 @@ let buystock = async (req, res) => {
   let stockdata = await StockSchma.findOne({ StockName: name });
   console.log(stockdata.ShareValue);
   userInv.Balance -= stockdata.ShareValue;
+  const multiplier = 1 + 0.04 * qty;
+  console.log(qty);
 
   // 5) update the master Stock model
   await StockSchma.updateOne(
@@ -45,7 +47,7 @@ let buystock = async (req, res) => {
       },
       // multiply current share value by (1 + 0.01*qty)
       $mul: {
-        ShareValue: 1 + 0.01 * qty,
+        ShareValue: multiplier,
       },
     }
   );

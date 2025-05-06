@@ -18,7 +18,6 @@ const Socketsetup = (server) => {
 
     if (token) {
       userdata = jwt.verify(token, process.env.JWTKEY);
-      console.log(userdata);
     }
   });
 

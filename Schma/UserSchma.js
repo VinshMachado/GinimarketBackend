@@ -9,7 +9,6 @@ let model = new mongoose.Schema({
     {
       stockName: String,
       stockQuantity: Number,
-      stockprice: Number,
       stockId: String,
       stockImg: String,
     },
