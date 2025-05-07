@@ -2,14 +2,18 @@ import userSchma from "../Schma/UserSchma.js";
 import jwt from "jsonwebtoken";
 import express from "express";
 import StockSchma from "../Schma/Stockschma.js";
+import socketswitch from "./socket.js";
 
 let userdata = async (req, res) => {
   let data = await userSchma.findOne({ _id: req.user.userId });
 
   res.status(200).json(data);
 };
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let buystock = async (req, res) => {
+  socketswitch.setSwitch(true);
+
   const { name, qty, stockId, stockImg } = req.body;
 
   console.log("a");
@@ -31,14 +35,17 @@ let buystock = async (req, res) => {
       stockImg: stockImg,
     });
   }
+
   let stockdata = await StockSchma.findOne({ StockName: name });
+
   console.log(stockdata.ShareValue);
   userInv.Balance -= stockdata.ShareValue;
   const multiplier = 1 + 0.04 * qty;
-  console.log(qty);
+  const newprice = stockdata.ShareValue * multiplier;
+  console.log(newprice, stockdata.ShareValue);
 
   // 5) update the master Stock model
-  await StockSchma.updateOne(
+  let a = await StockSchma.updateOne(
     { StockName: name },
     {
       $inc: {
@@ -46,19 +53,25 @@ let buystock = async (req, res) => {
         EqupiedShares: qty,
       },
       // multiply current share value by (1 + 0.01*qty)
-      $mul: {
-        ShareValue: multiplier,
+      $set: {
+        ShareValue: newprice,
       },
     }
   );
+  console.log(a);
+
   const freshUser = await userSchma.findById(req.user._id);
 
   res.status(200).json({ msg: "success", data: freshUser });
   await userInv.save();
+  delay(2000);
   console.log("completed");
+
+  socketswitch.setSwitch(false);
 };
 
 let sellstock = async (req, res) => {
+  socketswitch.setSwitch(true);
   const { name, qty } = req.body;
   console.log("a");
 
@@ -104,5 +117,6 @@ let sellstock = async (req, res) => {
 
   res.status(200).json({ msg: "success", data: freshUser });
   await userInv.save();
+  socketswitch.setSwitch(false);
 };
 export default { userdata, buystock, sellstock };

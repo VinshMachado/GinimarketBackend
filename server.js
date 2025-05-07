@@ -34,7 +34,7 @@ const httpServer = createServer(app);
 
 // Socket.IO setup
 
-Socketsetup(httpServer);
+Socketsetup.Socketsetup(httpServer);
 
 // ✅ Start the combined server
 httpServer.listen(port, () => {
