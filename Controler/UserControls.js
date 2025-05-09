@@ -99,7 +99,7 @@ let sellstock = async (req, res) => {
   userInv.Balance += stockdata.ShareValue;
   // 4) persist user changes
 
-  let multiplier = 1 - 0.01 * qty;
+  let multiplier = 1 - 0.001 * qty;
   await StockSchma.updateOne(
     { StockName: name },
     {

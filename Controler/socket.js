@@ -36,7 +36,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 //change price and update socket thingy //
 let changeStockPrices = async () => {
   console.log("changed price");
-  console.log(SocketSwitch);
+
   if (!SocketSwitch) {
     let data = await StockSchma.find({}).select("ShareValue _id");
     let updatedvalue = [];
@@ -46,9 +46,9 @@ let changeStockPrices = async () => {
       let oldprice = element.ShareValue;
       let randomNum = Math.floor(Math.random() * 2);
       if (randomNum == 1) {
-        element.ShareValue = element.ShareValue + element.ShareValue * 0.01;
+        element.ShareValue = element.ShareValue + element.ShareValue * 0.001;
       } else {
-        element.ShareValue = element.ShareValue - element.ShareValue * 0.01;
+        element.ShareValue = element.ShareValue - element.ShareValue * 0.001;
       }
 
       updatedvalue.push({ _id: element._id, ShareValue: element.ShareValue });
@@ -71,7 +71,6 @@ let changeStockPrices = async () => {
       io.emit("price-change", updatedvalue, colorBool);
     }
   } else {
-    console.log("waiting for update");
   }
   await delay(2000);
 
