@@ -40,7 +40,7 @@ let buystock = async (req, res) => {
 
   console.log(stockdata.ShareValue);
   userInv.Balance -= stockdata.ShareValue;
-  const multiplier = 1 + 0.04 * qty;
+  const multiplier = 1 + 0.002 * qty;
   const newprice = stockdata.ShareValue * multiplier;
   console.log(newprice, stockdata.ShareValue);
 
@@ -95,11 +95,14 @@ let sellstock = async (req, res) => {
   }
 
   let stockdata = await StockSchma.findOne({ StockName: name });
-  console.log(stockdata.ShareValue);
-  userInv.Balance += stockdata.ShareValue;
+  console.log(stockdata.ShareValue * holding.stockQuantity);
+  userInv.Balance += stockdata.ShareValue * holding.stockQuantity;
+  await userInv.save();
   // 4) persist user changes
 
-  let multiplier = 1 - 0.001 * qty;
+  let decrease = stockdata.ShareValue * (0.002 * qty);
+  decrease = -decrease;
+
   await StockSchma.updateOne(
     { StockName: name },
     {
@@ -107,16 +110,17 @@ let sellstock = async (req, res) => {
         OSshares: -qty,
         EqupiedShares: qty,
       },
-      // multiply current share value by (1 + 0.01*qty)
-      $mul: {
-        ShareValue: multiplier,
+
+      $inc: {
+        ShareValue: decrease,
       },
     }
   );
+
   const freshUser = await userSchma.findById(req.user._id);
 
   res.status(200).json({ msg: "success", data: freshUser });
-  await userInv.save();
+
   socketswitch.setSwitch(false);
 };
 export default { userdata, buystock, sellstock };
