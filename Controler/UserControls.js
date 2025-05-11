@@ -95,8 +95,13 @@ let sellstock = async (req, res) => {
   }
 
   let stockdata = await StockSchma.findOne({ StockName: name });
-  console.log(stockdata.ShareValue * holding.stockQuantity);
-  userInv.Balance += stockdata.ShareValue * holding.stockQuantity;
+  console.log(stockdata.ShareValue * qty);
+  userInv.Balance += stockdata.ShareValue * qty;
+  console.log(
+    stockdata.ShareValue * holding.stockQuantity,
+    "ss:",
+    userInv.Balance
+  );
   await userInv.save();
   // 4) persist user changes
 
