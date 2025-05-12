@@ -11,6 +11,7 @@ let model = new mongoose.Schema({
       stockQuantity: Number,
       stockId: String,
       stockImg: String,
+      avgPrice: Number,
     },
   ],
 });

@@ -14,7 +14,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let buystock = async (req, res) => {
   socketswitch.setSwitch(true);
 
-  const { name, qty, stockId, stockImg } = req.body;
+  const { name, qty, stockId, stockImg, avg } = req.body;
 
   console.log("a");
 
@@ -24,15 +24,16 @@ let buystock = async (req, res) => {
   const holding = userInv.ShareHoldings.find((h) => h.stockName === name);
 
   if (holding) {
-    // 3a) if it exists, bump the qty
     holding.stockQuantity += qty;
+    holding.avgPrice = holding.avgPrice + avg / 2;
+    console.log(holding.avgPrice);
   } else {
-    // 3b) otherwise add a new entry
     userInv.ShareHoldings.push({
       stockName: name,
       stockQuantity: qty,
       stockId: stockId,
       stockImg: stockImg,
+      avgPrice: avg,
     });
   }
 

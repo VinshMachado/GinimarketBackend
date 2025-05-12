@@ -41,8 +41,7 @@ let LoginUser = async (req, res) => {
   if (passVal == true) {
     let token = jwt.sign(
       { userId: user._id, name: user.Name },
-      process.env.JWTKEY,
-      { expiresIn: "90d" }
+      process.env.JWTKEY
     );
 
     console.log("success");
