@@ -20,10 +20,14 @@ const Socketsetup = (server) => {
     },
   });
   io.on("connect", (socket) => {
-    let token = socket.handshake.auth.token;
+    try {
+      let token = socket.handshake.auth.token;
 
-    if (token) {
-      userdata = jwt.verify(token, process.env.JWTKEY);
+      if (token) {
+        userdata = jwt.verify(token, process.env.JWTKEY);
+      }
+    } catch (e) {
+      console.log(e);
     }
   });
 
@@ -72,8 +76,7 @@ let changeStockPrices = async () => {
     }
   } else {
   }
-  await delay(4000);
-
+  await delay(3500);
   changeStockPrices();
 };
 

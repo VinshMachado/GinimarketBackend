@@ -16,8 +16,6 @@ let buystock = async (req, res) => {
 
   const { name, qty, stockId, stockImg, avg } = req.body;
 
-  console.log("a");
-
   const userInv = await userSchma.findById(req.user.userId);
   if (!userInv) return res.status(404).json({ msg: "User not found" });
 
@@ -25,8 +23,8 @@ let buystock = async (req, res) => {
 
   if (holding) {
     holding.stockQuantity += qty;
-    holding.avgPrice = holding.avgPrice + avg / 2;
-    console.log(holding.avgPrice);
+    holding.avgPrice = holding.avgPrice + avg / holding.stockQuantity;
+    console.log(holding);
   } else {
     userInv.ShareHoldings.push({
       stockName: name,
@@ -41,7 +39,7 @@ let buystock = async (req, res) => {
 
   console.log(stockdata.ShareValue);
   userInv.Balance -= stockdata.ShareValue;
-  const multiplier = 1 + 0.002 * qty;
+  const multiplier = 1 + 0.001 * qty;
   const newprice = stockdata.ShareValue * multiplier;
   console.log(newprice, stockdata.ShareValue);
 
@@ -59,7 +57,6 @@ let buystock = async (req, res) => {
       },
     }
   );
-  console.log(a);
 
   const freshUser = await userSchma.findById(req.user._id);
 
@@ -106,7 +103,7 @@ let sellstock = async (req, res) => {
   await userInv.save();
   // 4) persist user changes
 
-  let decrease = stockdata.ShareValue * (0.002 * qty);
+  let decrease = stockdata.ShareValue * (0.001 * qty);
   decrease = -decrease;
 
   await StockSchma.updateOne(
