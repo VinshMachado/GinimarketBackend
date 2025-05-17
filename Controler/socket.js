@@ -76,7 +76,7 @@ let changeStockPrices = async () => {
     }
   } else {
   }
-  await delay(3500);
+  await delay(2500);
   changeStockPrices();
 };
 

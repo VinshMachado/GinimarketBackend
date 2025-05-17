@@ -35,7 +35,7 @@ let LoginUser = async (req, res) => {
   console.log(req.body);
   let user = await userSchma.findOne({ Name: username });
 
-  if (!user) return res.status(401);
+  if (!user) return res.status(401).json({ msg: "user not found" });
 
   let passVal = await bcrypt.compare(password, user.Password);
   if (passVal == true) {

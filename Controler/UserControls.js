@@ -79,7 +79,6 @@ let sellstock = async (req, res) => {
   const holding = userInv.ShareHoldings.find((h) => h.stockName === name);
 
   if (holding) {
-    // 3a) if it exists, bump the qty
     holding.stockQuantity -= qty;
 
     if (holding.stockQuantity <= 0) {
@@ -94,6 +93,7 @@ let sellstock = async (req, res) => {
 
   let stockdata = await StockSchma.findOne({ StockName: name });
   console.log(stockdata.ShareValue * qty);
+
   userInv.Balance += stockdata.ShareValue * qty;
   console.log(
     stockdata.ShareValue * holding.stockQuantity,
