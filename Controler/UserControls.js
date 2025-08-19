@@ -126,4 +126,19 @@ let sellstock = async (req, res) => {
 
   socketswitch.setSwitch(false);
 };
-export default { userdata, buystock, sellstock };
+
+let GetTop5 = async (req, res) => {
+  try {
+    const topUsers = await userSchma
+      .find()
+      .sort({ Balance: -1 }) // sort by Balance descending
+      .limit(5) // only top 5
+      .select("Name Balance"); // return only Name & Balance fields
+
+    res.status(200).json(topUsers);
+  } catch (error) {
+    console.error("Error fetching top 5 users:", error);
+    res.status(500).json({ message: "Server error while fetching top users" });
+  }
+};
+export default { userdata, buystock, sellstock, GetTop5 };
